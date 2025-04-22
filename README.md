@@ -1,6 +1,6 @@
 # Sistem Manajemen Rumah Sakit – UTS MK EAI
 
-Proyek ini adalah bagian dari Ujian Tengah Semester untuk mata kuliah Enterprise Application Integration (EAI). Sistem dibangun menggunakan Laravel dan MySQL, dengan fitur REST API dan tampilan sederhana berbasis Blade.
+Sistem Manajemen Rumah Sakit ini dirancang untuk membantu pengelolaan data pasien dan transaksi penggunaan produk medis secara efisien. Aplikasi ini dibangun menggunakan framework Laravel dengan integrasi database MySQL serta dukungan REST API. Antarmuka pengguna dibuat menggunakan Blade View untuk memudahkan input dan visualisasi data secara real-time melalui browser.
 
 ---
 
@@ -127,8 +127,4 @@ Kampus : [Telkom University]
 Tahun : 2025
 
 📎 Catatan Tambahan
-Sistem dirancang agar mudah diuji melalui browser maupun API (Postman).
-
-Tampilan dibuat ringan untuk efisiensi demo UTS.
-
-Rute API menggunakan routes/api.php, sedangkan tampilan melalui routes/web.php.
+Sistem ini dirancang agar mudah diuji dan digunakan baik melalui browser maupun alat seperti Postman. Antarmuka dibuat ringan untuk menjaga kecepatan dan kenyamanan penggunaan. Rute API didefinisikan di routes/api.php, sedangkan tampilan web berada di routes/web.php.
