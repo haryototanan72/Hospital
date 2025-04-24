@@ -4,14 +4,19 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Order;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\OrderController;
 
-// Halaman view pasien + tabel
+
+Route::get('/', function () {
+    return redirect('/patients-view');
+});
+
 Route::get('/patients-view', function () {
     $patients = Patient::all();
     return view('patients', compact('patients'));
 });
 
-// Simpan data pasien dari form
 Route::post('/patients-store', function (Request $request) {
     $request->validate([
         'name' => 'required|string',
@@ -24,14 +29,12 @@ Route::post('/patients-store', function (Request $request) {
     return redirect('/patients-view#data')->with('success', 'Pasien berhasil ditambahkan!');
 });
 
-// Halaman view order + tabel
 Route::get('/orders-view', function () {
     $orders = Order::with('patient')->get();
     $patients = Patient::all(); 
     return view('orders', compact('orders', 'patients'));
 });
 
-// Simpan data order dari form
 Route::post('/orders-store', function (Request $request) {
     $request->validate([
         'patient_id' => 'required|exists:patients,id',
@@ -43,3 +46,16 @@ Route::post('/orders-store', function (Request $request) {
     Order::create($request->all());
     return redirect('/orders-view#data')->with('success', 'Order berhasil ditambahkan!');
 });
+
+
+Route::get('/patients', [PatientController::class, 'index']);
+Route::post('/patients-store', [PatientController::class, 'store']);
+Route::get('/patients/{id}/edit', [PatientController::class, 'edit']);
+Route::put('/patients/{id}', [PatientController::class, 'update']);
+Route::delete('/patients/{id}', [PatientController::class, 'destroy']);
+
+Route::get('/orders', [OrderController::class, 'index']);
+Route::post('/orders-store', [OrderController::class, 'store']);
+Route::get('/orders/{id}/edit', [OrderController::class, 'edit']);
+Route::put('/orders/{id}', [OrderController::class, 'update']);
+Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
