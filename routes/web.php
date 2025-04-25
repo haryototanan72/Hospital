@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Order;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\OrderController;
+
 
 Route::get('/', function () {
     return redirect('/patients-view');
@@ -43,3 +46,16 @@ Route::post('/orders-store', function (Request $request) {
     Order::create($request->all());
     return redirect('/orders-view#data')->with('success', 'Order berhasil ditambahkan!');
 });
+
+
+Route::get('/patients', [PatientController::class, 'index']);
+Route::post('/patients-store', [PatientController::class, 'store']);
+Route::get('/patients/{id}/edit', [PatientController::class, 'edit']);
+Route::put('/patients/{id}', [PatientController::class, 'update']);
+Route::delete('/patients/{id}', [PatientController::class, 'destroy']);
+
+Route::get('/orders', [OrderController::class, 'index']);
+Route::post('/orders-store', [OrderController::class, 'store']);
+Route::get('/orders/{id}/edit', [OrderController::class, 'edit']);
+Route::put('/orders/{id}', [OrderController::class, 'update']);
+Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
