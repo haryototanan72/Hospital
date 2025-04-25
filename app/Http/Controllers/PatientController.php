@@ -2,38 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
 use Illuminate\Http\Request;
+use App\Models\Patient;
 
 class PatientController extends Controller
 {
     public function index()
     {
-        return Patient::all();
+        $patients = Patient::all();
+        return view('patients.index', compact('patients'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'address' => 'nullable|string',
-            'phone' => 'nullable|string',
-            'complaint' => 'nullable|string',
-        ]);
-
-        $patient = Patient::create($validated);
-
-        return response()->json($patient, 201);
+        Patient::create($request->all());
+        return redirect('/patients')->with('success', 'Pasien berhasil ditambahkan!');
     }
 
-    public function show($id)
+        public function edit($id)
     {
-        $patient = Patient::with('orders')->find($id);
+        $patient = Patient::findOrFail($id);
+        return view('patients.edit', compact('patient'));
+    }
 
-        if (!$patient) {
-            return response()->json(['message' => 'Patient not found'], 404);
-        }
+    public function update(Request $request, $id)
+    {
+        $patient = Patient::findOrFail($id);
+        $patient->update($request->all());
+        return redirect('/patients')->with('success', 'Data pasien berhasil diubah!');
+    }
 
-        return $patient;
+    public function destroy($id)
+    {
+        $patient = Patient::findOrFail($id);
+        $patient->delete();
+        return redirect('/patients')->with('success', 'Data pasien berhasil dihapus!');
     }
 }
