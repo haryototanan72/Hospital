@@ -10,22 +10,18 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil data order dan pasien
         $orders = Order::with('patient')->get();
         $patients = Patient::all();
 
-        // Ambil ID pasien yang dipilih dari query string
         $selectedId = $request->query('patient_id');
         $selectedPatient = $selectedId ? Patient::find($selectedId) : $patients->first();
 
-        // Jika pasien yang dipilih tidak ditemukan, fallback ke pasien pertama
         if (!$selectedPatient) {
             return redirect('/orders')->with('error', 'Pasien tidak ditemukan.');
         }
 
         $analysis = null;
         if ($selectedPatient) {
-            // Ambil rekomendasi dan peringatan berdasarkan pasien yang dipilih
             $analysis = $this->getRecommendationAndWarning($selectedPatient);
         }
 
@@ -85,7 +81,6 @@ class OrderController extends Controller
         return redirect('/orders')->with('success', 'Order berhasil dihapus.');
     }
 
-    // ✅ Fungsi tambahan: Rekomendasi dan peringatan
     public function getRecommendation($patientId)
     {
         $patient = Patient::find($patientId);
@@ -94,19 +89,16 @@ class OrderController extends Controller
             return response()->json(['message' => 'Pasien tidak ditemukan'], 404);
         }
 
-        // Mendapatkan rekomendasi dan peringatan untuk pasien
         $analysis = $this->getRecommendationAndWarning($patient);
-
         return response()->json($analysis);
     }
 
-    // ✅ Fungsi untuk mendapatkan rekomendasi dan peringatan
     public function getRecommendationAndWarning(Patient $patient)
     {
         $recommendation = "Konsultasi lebih lanjut.";
         $warning = null;
 
-        // Rekomendasi obat berdasarkan keluhan
+        // Rekomendasi berdasarkan keluhan
         $complaint = strtolower($patient->complaint ?? '');
         if (str_contains($complaint, 'demam')) {
             $recommendation = 'Paracetamol';
@@ -118,22 +110,31 @@ class OrderController extends Controller
             $recommendation = 'Panadol';
         }
 
-        // Analisis ketergantungan
+        // Analisis order terakhir
         $lastOrders = Order::where('patient_id', $patient->id)
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
-        if ($lastOrders->count() >= 3) {
-            $obat = $lastOrders->pluck('product_name')->unique();
-            $jumlah = $lastOrders->pluck('quantity');
+        // Grouping berdasarkan nama produk
+        $grouped = $lastOrders->groupBy('product_name');
 
-            if ($obat->count() === 1 && $jumlah->sort()->values()->toArray() === $jumlah->toArray()) {
-                $warning = "⚠️ Pasien ini mungkin mengalami ketergantungan terhadap obat: " . $obat->first();
+        foreach ($grouped as $product => $orders) {
+            $quantities = $orders->pluck('quantity')->values();
+
+            // Cek jika jumlah pemesanan meningkat terus
+            if ($orders->count() >= 3 && $quantities->sort()->values()->toArray() === $quantities->toArray()) {
+                $warning = "⚠️ Pasien mungkin mengalami ketergantungan terhadap obat: $product karena jumlahnya terus meningkat.⚠️";
+                break;
+            }
+
+            // Cek jika salah satu order sudah melebihi 10
+            if ($quantities->max() > 10) {
+                $warning = "⚠️ Ditemukan indikasi ketergantungan pada obat: $product karena jumlah melebihi batas wajar.⚠️";
+                break;
             }
         }
 
-        // Mengembalikan data rekomendasi dan peringatan dalam format array
         return [
             'recommendation' => $recommendation,
             'warning' => $warning,

@@ -22,35 +22,48 @@
         <p class="text-green-600 text-center mb-4">{{ session('success') }}</p>
     @endif
 
+    {{-- 🔍 Dropdown pasien untuk rekomendasi --}}
+    <form method="GET" action="{{ url('/orders') }}" class="max-w-xl mx-auto mb-6">
+        <label for="patient_id" class="block mb-2 font-medium">Pilih Pasien untuk Order:</label>
+        <select name="patient_id" onchange="this.form.submit()" class="w-full p-2 border rounded">
+            <option value="">-- Pilih Pasien --</option>
+            @foreach ($patients as $patient)
+                <option value="{{ $patient->id }}" {{ request('patient_id') == $patient->id ? 'selected' : '' }}>
+                    {{ $patient->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+
     {{-- ✅ FORM TAMBAH ORDER --}}
-    <div id="form" class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow mb-10">
-        <h3 class="text-lg font-semibold mb-4">📝 Tambah Order Baru</h3>
+    @if (request('patient_id'))
+        @php
+            $selectedId = request('patient_id');
+            $selectedPatient = $patients->find($selectedId);
+        @endphp
 
-        {{-- 💡 Rekomendasi & Warning --}}
-        @if (isset($selectedId) && isset($analysis))
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded mb-6">
-            
-                <p><strong>💡 Rekomendasi Obat:</strong> {{ $analysis['recommendation'] }}</p>
-                @if ($analysis['warning'])
-                    <p class="text-red-600 mt-2"><strong>{{ $analysis['warning'] }}</strong></p>
-                @endif
-            </div>
-        @endif
+        <div id="form" class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow mb-10">
+            <h3 class="text-lg font-semibold mb-4">📝 Tambah Order Baru</h3>
 
-        <form action="{{ route('orders.store') }}" method="POST">
-            @csrf
+            {{-- 💡 Informasi Keluhan & Rekomendasi --}}
+            @if (isset($analysis) && $selectedPatient)
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded mb-6">
+                    <p><strong>🧍 Pasien:</strong> {{ $selectedPatient->name }}</p>
+                    @if ($selectedPatient->complaint)
+                        <p><strong>📋 Keluhan:</strong> {{ $selectedPatient->complaint }}</p>
+                    @endif
+                    <p><strong>💊 Rekomendasi Obat:</strong> {{ $analysis['recommendation'] }}</p>
+                    @if (!empty($analysis['warning']))
+                        <p class="text-red-600 mt-2"><strong>⚠️ {{ $analysis['warning'] }}⚠️</strong></p>
+                    @endif
+                </div>
+            @endif
 
-            <label class="block mb-2 font-medium">Pasien:</label>
-            <select name="patient_id" onchange="this.form.submit()" required class="w-full p-2 border rounded mb-4">
-                <option value="">-- Pilih Pasien --</option>
-                @foreach ($patients as $patient)
-                    <option value="{{ $patient->id }}" {{ (isset($selectedId) && $selectedId == $patient->id) ? 'selected' : '' }}>
-                        {{ $patient->name }}
-                    </option>
-                @endforeach
-            </select>
+            <form action="{{ route('orders.store') }}" method="POST">
+                @csrf
 
-            @if (isset($selectedId))
+                <input type="hidden" name="patient_id" value="{{ $selectedId }}">
+
                 <label class="block mb-2 font-medium">Nama Produk:</label>
                 <input type="text" name="product_name" required class="w-full p-2 border rounded mb-4">
 
@@ -60,14 +73,12 @@
                 <label class="block mb-2 font-medium">Catatan:</label>
                 <textarea name="note" class="w-full p-2 border rounded mb-4"></textarea>
 
-                <input type="hidden" name="patient_id" value="{{ $selectedId }}">
-
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-medium">
                     💾 Simpan
                 </button>
-            @endif
-        </form>
-    </div>
+            </form>
+        </div>
+    @endif
 
     {{-- 📄 Tabel order --}}
     <div id="data" class="overflow-x-auto">
