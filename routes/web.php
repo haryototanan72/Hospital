@@ -5,13 +5,15 @@ use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Order;
 
-// Halaman view pasien + tabel
+Route::get('/', function () {
+    return redirect('/patients-view');
+});
+
 Route::get('/patients-view', function () {
     $patients = Patient::all();
     return view('patients', compact('patients'));
 });
 
-// Simpan data pasien dari form
 Route::post('/patients-store', function (Request $request) {
     $request->validate([
         'name' => 'required|string',
@@ -24,14 +26,12 @@ Route::post('/patients-store', function (Request $request) {
     return redirect('/patients-view#data')->with('success', 'Pasien berhasil ditambahkan!');
 });
 
-// Halaman view order + tabel
 Route::get('/orders-view', function () {
     $orders = Order::with('patient')->get();
     $patients = Patient::all(); 
     return view('orders', compact('orders', 'patients'));
 });
 
-// Simpan data order dari form
 Route::post('/orders-store', function (Request $request) {
     $request->validate([
         'patient_id' => 'required|exists:patients,id',

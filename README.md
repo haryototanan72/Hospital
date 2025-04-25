@@ -1,17 +1,17 @@
 # Sistem Manajemen Rumah Sakit – UTS MK EAI
 
-Proyek ini adalah bagian dari Ujian Tengah Semester untuk mata kuliah Enterprise Application Integration (EAI). Sistem dibangun menggunakan Laravel dan MySQL, dengan fitur REST API dan tampilan sederhana berbasis Blade.
+Sistem Manajemen Rumah Sakit ini dirancang untuk membantu pengelolaan data pasien dan transaksi penggunaan produk medis secara efisien. Aplikasi ini dibangun menggunakan framework Laravel dengan integrasi database MySQL serta dukungan REST API. Antarmuka pengguna dibuat menggunakan Blade View untuk memudahkan input dan visualisasi data secara real-time melalui browser.
 
 ---
 
 ##  Fitur Sistem
 
-- ✅ Menyimpan dan menampilkan data **pasien**
-- ✅ Menyimpan dan menampilkan data **order (transaksi penggunaan produk medis)**
-- ✅ Relasi pasien ↔ order
-- ✅ Input data melalui form web dan API
-- ✅ Tabel visualisasi data
-- ✅ Validasi dan notifikasi sukses
+-  Menyimpan dan menampilkan data **pasien**
+-  Menyimpan dan menampilkan data **order (transaksi penggunaan produk medis)**
+-  Relasi pasien ↔ order
+-  Input data melalui form web dan API
+-  Tabel visualisasi data
+-  Validasi dan notifikasi sukses
 
 ---
 
@@ -67,6 +67,7 @@ Proyek ini adalah bagian dari Ujian Tengah Semester untuk mata kuliah Enterprise
   "phone": "081234567890",
   "complaint": "Sakit kepala"
 }
+--- 
 
  ### Tambah Orders
 **POST** `/api/Orders`
@@ -77,7 +78,8 @@ Proyek ini adalah bagian dari Ujian Tengah Semester untuk mata kuliah Enterprise
   "quantity": 2,
   "note": "Untuk demam"
 }
-
+--- 
+SS
 #Struktur Tabel Database
 patients
 id (BIGINT)
@@ -101,7 +103,7 @@ quantity (INT)
 
 note (TEXT)
 
-✅ Status Pengujian
+ Status Pengujian
  Tambah pasien (via form & API)
 
  Tambah order (via form & API)
@@ -126,9 +128,5 @@ Kampus : [Telkom University]
 
 Tahun : 2025
 
-📎 Catatan Tambahan
-Sistem dirancang agar mudah diuji melalui browser maupun API (Postman).
-
-Tampilan dibuat ringan untuk efisiensi demo UTS.
-
-Rute API menggunakan routes/api.php, sedangkan tampilan melalui routes/web.php.
+ Catatan Tambahan
+Sistem ini dirancang agar mudah diuji dan digunakan baik melalui browser maupun alat seperti Postman. Antarmuka dibuat ringan untuk menjaga kecepatan dan kenyamanan penggunaan. Rute API didefinisikan di routes/api.php, sedangkan tampilan web berada di routes/web.php.
