@@ -6,12 +6,12 @@ Sistem Manajemen Rumah Sakit ini dirancang untuk membantu pengelolaan data pasie
 
 ##  Fitur Sistem
 
-- ✅ Menyimpan dan menampilkan data **pasien**
-- ✅ Menyimpan dan menampilkan data **order (transaksi penggunaan produk medis)**
-- ✅ Relasi pasien ↔ order
-- ✅ Input data melalui form web dan API
-- ✅ Tabel visualisasi data
-- ✅ Validasi dan notifikasi sukses
+-  Menyimpan dan menampilkan data **pasien**
+-  Menyimpan dan menampilkan data **order (transaksi penggunaan produk medis)**
+-  Relasi pasien ↔ order
+-  Input data melalui form web dan API
+-  Tabel visualisasi data
+-  Validasi dan notifikasi sukses
 
 ---
 
@@ -67,6 +67,7 @@ Sistem Manajemen Rumah Sakit ini dirancang untuk membantu pengelolaan data pasie
   "phone": "081234567890",
   "complaint": "Sakit kepala"
 }
+--- 
 
  ### Tambah Orders
 **POST** `/api/Orders`
@@ -77,7 +78,8 @@ Sistem Manajemen Rumah Sakit ini dirancang untuk membantu pengelolaan data pasie
   "quantity": 2,
   "note": "Untuk demam"
 }
-
+--- 
+SS
 #Struktur Tabel Database
 patients
 id (BIGINT)
@@ -101,7 +103,7 @@ quantity (INT)
 
 note (TEXT)
 
-✅ Status Pengujian
+ Status Pengujian
  Tambah pasien (via form & API)
 
  Tambah order (via form & API)
@@ -126,5 +128,5 @@ Kampus : [Telkom University]
 
 Tahun : 2025
 
-📎 Catatan Tambahan
+ Catatan Tambahan
 Sistem ini dirancang agar mudah diuji dan digunakan baik melalui browser maupun alat seperti Postman. Antarmuka dibuat ringan untuk menjaga kecepatan dan kenyamanan penggunaan. Rute API didefinisikan di routes/api.php, sedangkan tampilan web berada di routes/web.php.
